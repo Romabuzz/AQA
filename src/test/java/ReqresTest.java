@@ -19,4 +19,8 @@ public class ReqresTest {
 
         List<Color> colors = response.jsonPath().getList("data", Color.class);
 
-        for (Color color :
+        for (Color color : colors) {
+            assertTrue(color.getYear() >= 2000);
+        }
+    }
+}

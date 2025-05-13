@@ -1,52 +1,66 @@
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.*;
+import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class PetStoreTest {
-    int petId = 1500000;
 
-    @Test
-    public void PetLifecycle() throws InterruptedException {
-        int petId = 1500000;
+    private static final int PET_ID = 1500000;
+    private static RequestSpecification spec;
 
-        RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body("{ \"id\": " + petId + ", \"name\": \"TestPet\", \"status\": \"available\" }")
-                .when()
-                .post("https://petstore.swagger.io/v2/pet")
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(petId));
-        Thread.sleep(3000);
-
-        RestAssured.given()
-                .when()
-                .get("https://petstore.swagger.io/v2/pet/" + petId)
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(petId));
-        Thread.sleep(3000);
-
-        RestAssured.given()
-                .when()
-                .delete("https://petstore.swagger.io/v2/pet/" + petId)
-                .then()
-                .statusCode(200)
-                .body("message", equalTo(String.valueOf(petId)));
-
-
+    @BeforeAll
+    public static void setUp() {
+        RestAssured.baseURI = "https://petstore.swagger.io/v2";
+        spec = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
+                .build();
     }
 
     @Test
-    public void testInvalidLogin() {
-        RestAssured.given()
+    public void petLifecycle() throws InterruptedException {
+        given()
+                .spec(spec)
+                .body("{ \"id\": " + PET_ID + ", \"name\": \"TestPet\", \"status\": \"available\" }")
+                .when()
+                .post("/pet")
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(PET_ID));
+
+        Thread.sleep(3000);
+
+        given()
+                .spec(spec)
+                .when()
+                .get("/pet/" + PET_ID)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(PET_ID));
+
+        Thread.sleep(3000);
+
+        given()
+                .spec(spec)
+                .when()
+                .delete("/pet/" + PET_ID)
+                .then()
+                .statusCode(200)
+                .body("message", equalTo(String.valueOf(PET_ID)));
+    }
+
+    @Test
+    public void invalidLogin() {
+        given()
+                .spec(spec)
                 .queryParam("username", "wrong")
                 .queryParam("password", "wrong")
                 .when()
-                .get("https://petstore.swagger.io/v2/user/login")
+                .get("/user/login")
                 .then()
                 .statusCode(200);
     }

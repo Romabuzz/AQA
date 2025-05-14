@@ -10,12 +10,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class PetStoreTest {
 
+    private static final String BASE_URI = "https://petstore.swagger.io/v2";
     private static final int PET_ID = 1500000;
     private static RequestSpecification spec;
 
     @BeforeAll
     public static void setUp() {
-        RestAssured.baseURI = "https://petstore.swagger.io/v2";
+        RestAssured.baseURI = BASE_URI;
         spec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .build();

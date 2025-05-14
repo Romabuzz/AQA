@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.pages.PageObject;
+import org.example.pages.AuthorizationPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ public class GithubTests {
     @DisplayName("Успешная авторизация на Github")
     @Test
     public void successfulLoginTest() {
-        PageObject page = new PageObject();
+        AuthorizationPage page = new AuthorizationPage();
 
         open(BASE_URL);
         page.openLoginPage()
@@ -34,7 +34,7 @@ public class GithubTests {
     @DisplayName("Ошибка авторизации на Github")
     @Test
     public void unsuccessfulLoginTest() {
-        PageObject page = new PageObject();
+        AuthorizationPage page = new AuthorizationPage();
 
         open(BASE_URL);
         page.openLoginPage()

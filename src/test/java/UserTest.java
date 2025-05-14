@@ -3,6 +3,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pojo.User;
+import org.example.config.ReqresConfig;
 
 import java.util.List;
 
@@ -10,20 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserTest {
 
-    private static final String BASE_URI = "https://reqres.in";
-    private static final String API_KEY = "reqres-free-v1";
-
-    @BeforeAll
-    public static void setUp() {
-        RestAssured.baseURI = BASE_URI;
-    }
-
     @Test
     public void testAvatarsContainDomain() {
         Response response = RestAssured
                 .given()
-                .header("x-api-key", API_KEY)
-                .get("/api/users?page=1");
+                .header("x-api-key", ReqresConfig.API_KEY)
+                .get(ReqresConfig.BASE_URL + "/api/users?page=1");
 
         assertTrue(response.statusCode() == 200);
 
